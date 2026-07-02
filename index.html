@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My One & Only: Isha Thakur 💖</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4d6d;
+            --secondary: #ff758f;
+            --dark: #0f0c1b;
+            --luxury-gold: #ffb703;
+            --glass: rgba(255, 255, 255, 0.08);
+            --accent: #ff006e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #1a0f2e 0%, #0a0512 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0512;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOutLoader 0.5s ease-in-out 3s forwards;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-content h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 77, 109, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeOutLoader {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* Background Canvas for Petals/Stars */
+        #effect-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 12, 27, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 77, 109, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+        }
+
+        .navbar-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: var(--glass);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 77, 109, 0.2);
+            border-color: var(--primary);
+        }
+
+        /* Music Floating Button - Improved */
+        .music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 20px var(--primary);
+            animation: pulse 2s infinite;
+            font-size: 1.5rem;
+            transition: 0.3s;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px var(--primary);
+        }
+
+        .music-btn.playing {
+            animation: pulse-play 0.6s infinite;
+        }
+
+        @keyframes pulse-play {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--luxury-gold));
+            z-index: 49;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Premium Pages Container */
+        .page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px 40px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            scroll-snap-align: start;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(50px);
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+
+        .glass-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        /* Photo Grid - Improved */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+            aspect-ratio: 1;
+        }
+
+        .photo-grid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: brightness(0.9);
+        }
+
+        .photo-grid img:hover {
+            transform: scale(1.1) rotate(2deg);
+            filter: brightness(1);
+        }
+
+        /* Photo Placeholder */
+        .photo-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+        }
+
+        /* 1000 Sorries Box - Improved */
+        .sorry-box {
+            height: 350px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            color: var(--luxury-gold);
+            margin: 25px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) rgba(0, 0, 0, 0.3);
+        }
+
+        .sorry-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sorry-box::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        .sorry-box::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .sorry-box::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        /* Promises Grid */
+        .promises-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .promise-item {
+            background: rgba(255, 77, 109, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+        .promise-item:hover {
+            background: rgba(255, 77, 109, 0.2);
+            transform: translateX(10px);
+        }
+
+        .promise-item p {
+            margin-bottom: 0;
+            font-size: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 30px var(--primary);
+            }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(1); }
+        }
+
+        /* Special Page Glow */
+        .special-date {
+            border: 2px dashed var(--luxury-gold);
+            background: rgba(255, 183, 3, 0.05);
+        }
+
+        .btn-next {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 14px 40px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 1rem;
+        }
+
+        .btn-next:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px var(--primary);
+        }
+
+        .btn-next:active {
+            transform: scale(0.98);
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 99;
+            pointer-events: none;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-to-top:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        /* Page Counter */
+        .page-counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 15px;
+            }
+
+            .navbar-title {
+                font-size: 1rem;
+            }
+
+            .glass-card {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .music-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page {
+                padding: 80px 15px 30px;
+            }
+
+            .glass-card {
+                padding: 20px 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .navbar-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="loader-content">
+            <h2>💖 Loading your special message...</h2>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="navbar-title">💕 For Isha Thakur 💕</div>
+        <div class="navbar-buttons">
+            <button class="nav-btn" onclick="scrollToPage(1)">Start</button>
+            <button class="nav-btn" onclick="scrollToPage(5)">Special</button>
+            <button class="nav-btn" onclick="scrollToPage(10)">Finish</button>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar"></div>
+
+    <!-- Canvas for Falling Effects -->
+    <canvas id="effect-canvas"></canvas>
+
+    <!-- Music Button -->
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+    <audio id="bg-music" loop preload="none">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">⬆️</div>
+
+    <!-- Page Counter -->
+    <div class="page-counter" id="pageCounter">Page 1/10</div>
+
+    <!-- PAGE 1: THE GRAND OPENING -->
+    <section class="page" id="page1">
+        <div class="glass-card">
+            <h1>Hey Isha... 🥺</h1>
+            <p>I know you are super, super angry with me right now. Your anger is completely justified, but my heart couldn't handle the silence anymore.</p>
+            <p>So, I built this entire luxury space just to say sorry to my queen. This page is made with all my love and apologies.</p>
+            <p>Please scroll down... let me try to fix us? ❤️</p>
+            <button class="btn-next" onclick="scrollToPage(2)">Click here, please 🌹</button>
+        </div>
+    </section>
+
+    <!-- PAGE 2: ROMANTIC CONFESSION -->
+    <section class="page" id="page2">
+        <div class="glass-card">
+            <h1>Tum Meri Zindagi Ho 💕</h1>
+            <p>Isha, you know you are the best thing that ever happened to me. When you smile, everything makes sense.</p>
+            <p>When you laugh, my whole universe lights up. And when you are mad at me... it feels like the sun forgot to rise.</p>
+            <p>I never ever want to be the reason behind your tears or irritation. I am so deeply sorry, baby. You mean everything to me.</p>
+            <button class="btn-next" onclick="scrollToPage(3)">Look at us 📸</button>
+        </div>
+    </section>
+
+    <!-- PAGE 3: THE MEMORY LANE (PHOTOS) -->
+    <section class="page" id="page3">
+        <div class="glass-card">
+            <h1>Our Beautiful Memories 🌸</h1>
+            <p>Look at these pictures, Isha. Look at how happy we are together. Our bond is way too beautiful to be broken by a stupid mistake or an argument.</p>
+            <div class="photo-grid" id="photoGrid">
+                <!-- Photos will be loaded here -->
+            </div>
+            <p style="font-size: 0.9rem; margin-top: 20px; opacity: 0.7;">💡 Tip: Add your photos to the photos array in the script section</p>
+            <button class="btn-next" onclick="scrollToPage(4)">Continue reading... ✨</button>
+        </div>
+    </section>
+
+    <!-- PAGE 4: THE DEEP EMOTIONAL APOLOGY -->
+    <section class="page" id="page4">
+        <div class="glass-card">
+            <h1>My Deepest Apology 💔</h1>
+            <p>I sat down thinking how to tell you how incredibly sorry I am. Sometimes I act stupidly, say things without thinking, and hurt the one person I promise to protect forever.</p>
+            <p>I hate myself for making you feel sad. You deserve the highest form of love, patience, and luxury care.</p>
+            <p>And I promise to spend every single day making up for my mistake. Please forgive your idiot? 🥺</p>
+            <button class="btn-next" onclick="scrollToPage(5)">Next Page... 💎</button>
+        </div>
+    </section>
+
+    <!-- PAGE 5: THE SPECIAL DAY 18/09/2025 -->
+    <section class="page" id="page5" style="background: rgba(255, 77, 109, 0.03);">
+        <div class="glass-card special-date">
+            <h1 style="color: var(--luxury-gold);">📅 18/09/2025 🌟</h1>
+            <p>This date is etched permanently into my heart. Remember this special day? The vibes, the love, the way we felt... it was pure magic.</p>
+            <p>Every moment with you on that day was perfect. Your smile, your laugh, the way you looked at me—everything was absolutely perfect.</p>
+            <p>I swear on this beautiful memory that my love for you is pure, real, and forever. I will never let anything destroy what we started building on this day.</p>
+            <button class="btn-next" onclick="scrollToPage(6)">I have something crazy next ➔</button>
+        </div>
+    </section>
+
+    <!-- PAGE 6: 1000 SORRIES SECTION -->
+    <section class="page" id="page6">
+        <div class="glass-card">
+            <h1>I Am 1000 Times Sorry! 😭</h1>
+            <p>You thought I was just saying it? No. Here are literally one thousand sorries generated just for you, Isha Thakur. Each one is real and sincere.</p>
+            <div class="sorry-box" id="sorry-container">
+                <!-- 1000 sorries will be loaded here -->
+            </div>
+            <button class="btn-next" onclick="scrollToPage(7)">Still angry? Click here ❤️</button>
+        </div>
+    </section>
+
+    <!-- PAGE 7: CUTE PROMISES -->
+    <section class="page" id="page7">
+        <div class="glass-card">
+            <h1>My Cute Little Promises 🌸</h1>
+            <p>I promise to you, my beautiful Isha:</p>
+            <div class="promises-grid">
+                <div class="promise-item">
+                    <p>🌟 I promise to listen to you even when you're nagging (because I love hearing your voice).</p>
+                </div>
+                <div class="promise-item">
+                    <p>🍫 I promise to buy you chocolates whenever you feel low or just because.</p>
+                </div>
+                <div class="promise-item">
+                    <p>🤫 I promise to accept that you are always right (even when you're not!).</p>
+                </div>
+                <div class="promise-item">
+                    <p>❤️ I promise to love you more tomorrow than I do today.</p>
+                </div>
+                <div class="promise-item">
+                    <p>💎 I promise to treat you like the queen you are, always and forever.</p>
+                </div>
+                <div class="promise-item">
+                    <p>🛡️ I promise to shield you from all pain and negativity in this world.</p>
+                </div>
+            </div>
+            <button class="btn-next" onclick="scrollToPage(8)">Almost there... 👑</button>
+        </div>
+    </section>
+
+    <!-- PAGE 8: LUXURY VOWS -->
+    <section class="page" id="page8">
+        <div class="glass-card">
+            <h1>The Luxury Vow 💎</h1>
+            <p>You are not just my girlfriend; you are my queen, my luxury, my prize asset in this world.</p>
+            <p>I vow to always treat you with the highest respect, shield you from pain, and love you lavishly.</p>
+            <p>You deserve nothing less than the absolute best, and I promise to be the man who gives you exactly that.</p>
+            <p>Your happiness is my mission. Your smile is my reward. Your love is my everything.</p>
+            <button class="btn-next" onclick="scrollToPage(9)">Just two more pages 🌹</button>
+        </div>
+    </section>
+
+    <!-- PAGE 9: WHY ISHA IS THE BEST -->
+    <section class="page" id="page9">
+        <div class="glass-card">
+            <h1>Why Isha Thakur is the Best Person Alive 💖</h1>
+            <p>Your eyes hold entire galaxies. Your kindness is unmatched. The way you care for me even when you are annoyed is beautiful and pure.</p>
+            <p>Your intelligence is mesmerizing. Your sense of humor makes me laugh until my stomach hurts. Your presence alone is enough to make everything better.</p>
+            <p>There is literally no one like you on this earth, and I am the luckiest guy to have you in my life. You make me want to be a better person every single day.</p>
+            <button class="btn-next" onclick="scrollToPage(10)">The Final Question 🥺</button>
+        </div>
+    </section>
+
+    <!-- PAGE 10: THE FINAL VERDICT -->
+    <section class="page" id="page10">
+        <div class="glass-card">
+            <h1>Maaf Kardo Na? 🥺❤️</h1>
+            <p>I have shown you my heart, my tears, our memories, and 1000 sorries. I've made you promises and vows.</p>
+            <p>Now, my beautiful Isha, please smile, send me a text, and say that I am forgiven. I love you more than words can ever express.</p>
+            <h2 style="margin-top: 30px; color: var(--primary); animation: heartBeat 1s infinite;">💕 I Love You Infinite 💕</h2>
+            <p style="font-size: 1.1rem; margin-top: 15px; color: var(--luxury-gold);">Forever & Always ✨</p>
+            <p style="font-size: 0.8rem; margin-top: 40px; opacity: 0.5;">Made with ultimate love by your favourite idiot. 🥺</p>
+            <button class="btn-next" onclick="scrollToPage(1)">Start Over ↻</button>
+        </div>
+    </section>
+
+    <script>
+        // ===== CONFIGURATION =====
+        // Add your photo URLs here (or use emoji placeholders)
+        const photoUrls = [
+            'https://via.placeholder.com/300?text=Memory+1+💕',
+            'https://via.placeholder.com/300?text=Memory+2+🌹',
+            'https://via.placeholder.com/300?text=Memory+3+✨',
+            'https://via.placeholder.com/300?text=Memory+4+💖'
+        ];
+
+        // ===== 1. GENERATE 1000 SORRIES =====
+        function generateSorries() {
+            const sorryBox = document.getElementById('sorry-container');
+            let sorryText = "";
+            for (let i = 1; i <= 1000; i++) {
+                sorryText += `${i}. I am so sorry, my beautiful Isha Thakur... Please forgive me! ❤️<br>`;
+            }
+            sorryBox.innerHTML = sorryText;
+        }
+
+        // ===== 2. LOAD PHOTO GRID =====
+        function loadPhotos() {
+            const photoGrid = document.getElementById('photoGrid');
+            photoUrls.forEach((url, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = `Memory ${index + 1}`;
+                img.onerror = function() {
+                    // Fallback to emoji if image fails to load
+                    this.parentElement.innerHTML = '<div class="photo-placeholder">📸</div>';
+                };
+                
+                photoItem.appendChild(img);
+                photoGrid.appendChild(photoItem);
+            });
+        }
+
+        // ===== 3. BACKGROUND MUSIC CONTROLLER =====
+        let musicPlaying = false;
+        const musicBtn = document.getElementById('musicBtn');
+        const bgMusic = document.getElementById('bg-music');
+
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicPlaying = false;
+                musicBtn.classList.remove('playing');
+            } else {
+                bgMusic.play().catch(err => {
+                    console.log('Audio autoplay blocked:', err);
+                    alert('Click anywhere on the page first, then try the music button!');
+                });
+                musicPlaying = true;
+                musicBtn.classList.add('playing');
+            }
+        }
+
+        // ===== 4. FALLING HEARTS AND STARS ANIMATION =====
+        const canvas = document.getElementById('effect-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const elements = [];
+        const types = ['❤️', '🌸', '✨', '🌹', '💖'];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * -canvas.height;
+                this.char = types[Math.floor(Math.random() * types.length)];
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 2 + 0.5;
+                this.angle = Math.random() * 360;
+                this.opacity = Math.random() * 0.5 + 0.5;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.angle += 0.5;
+                this.x += Math.sin(this.angle * 0.01) * 0.5;
+                
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.font = `${this.size}px serif`;
+                ctx.fillText(this.char, this.x, this.y);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // Create particles (optimized for performance)
+        const particleCount = window.innerWidth > 768 ? 30 : 15;
+        for (let i = 0; i < particleCount; i++) {
+            elements.push(new Particle());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            elements.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // ===== 5. PAGE NAVIGATION AND PROGRESS TRACKING =====
+        function scrollToPage(pageNum) {
+            const page = document.getElementById(`page${pageNum}`);
+            if (page) {
+                page.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Update progress bar and page counter on scroll
+        window.addEventListener('scroll', () => {
+            // Update progress bar
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.querySelector('.progress-bar').style.width = scrollPercent + '%';
+
+            // Show/hide back to top button
+            const backToTop = document.getElementById('backToTop');
+            if (scrollTop > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+
+            // Update page counter
+            const pages = document.querySelectorAll('.page');
+            let currentPage = 1;
+            pages.forEach((page, index) => {
+                const rect = page.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2) {
+                    currentPage = index + 1;
+                }
+            });
+            document.getElementById('pageCounter').textContent = `Page ${currentPage}/10`;
+        });
+
+        // ===== 6. INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            generateSorries();
+            loadPhotos();
+            
+            // Enable music play on user interaction
+            document.addEventListener('click', () => {
+                bgMusic.volume = 0.3; // Set volume to 30%
+            }, { once: true });
+        });
+
+        // Smooth scroll behavior for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

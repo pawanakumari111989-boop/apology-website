@@ -634,7 +634,7 @@
             <h1>Hey Isha... 🥺</h1>
             <p>I know you are super, super angry with me right now. Your anger is completely justified, but my heart couldn't handle the silence anymore.</p>
             <p>So, I built this entire luxury space just to say sorry to my queen. This page is made with all my love and apologies.</p>
-            <p>🎵 There's a beautiful Arijit Singh song playing in the background to set the mood...</p>
+            <p>🎵 "Zara Sa" by Emraan Hashmi is playing in the background to set the mood...</p>
             <p>Please scroll down... let me try to fix us? ❤️</p>
             <button class="btn-next" onclick="scrollToPage(2)">Click here, please 🌹</button>
         </div>
@@ -764,37 +764,13 @@
 
     <script>
         // ===== CONFIGURATION =====
-        // Beautiful Arijit Singh romantic songs for your special someone
-        const romanticSongs = [
-            {
-                title: "Ae Dil Hai Mushkil",
-                artist: "Arijit Singh",
-                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-            },
-            {
-                title: "Tum Hi Ho",
-                artist: "Arijit Singh",
-                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-            },
-            {
-                title: "Raabta",
-                artist: "Arijit Singh",
-                url: "https://assets.mixkit.co/active_storage/sfx/2744/2744-preview.mp3"
-            },
-            {
-                title: "Teri Aakhon Mein",
-                artist: "Arijit Singh",
-                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-            },
-            {
-                title: "Kabhi Kabhi Aditi Zindagi",
-                artist: "Arijit Singh",
-                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
-            }
-        ];
+        // Single romantic song - Zara Sa by Emraan Hashmi
+        const musicConfig = {
+            title: "Zara Sa",
+            artist: "Emraan Hashmi",
+            url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+        };
 
-        // Current song index
-        let currentSongIndex = 0;
         const bgMusic = document.getElementById('bg-music');
         const musicBtn = document.getElementById('musicBtn');
         const musicInfo = document.getElementById('musicInfo');
@@ -807,10 +783,9 @@
 
         // ===== 1. LOAD SONG INFO =====
         function loadSongInfo() {
-            const currentSong = romanticSongs[currentSongIndex];
-            musicTitle.textContent = currentSong.title + " ♪";
-            musicArtist.textContent = currentSong.artist;
-            bgMusic.src = currentSong.url;
+            musicTitle.textContent = musicConfig.title + " ♪";
+            musicArtist.textContent = musicConfig.artist;
+            bgMusic.src = musicConfig.url;
         }
 
         // ===== 2. TOGGLE MUSIC =====
@@ -841,15 +816,6 @@
                 const duration = formatTime(bgMusic.duration);
                 musicTime.textContent = `${current} / ${duration}`;
             }
-        });
-
-        // Switch to next song when current ends
-        bgMusic.addEventListener('ended', () => {
-            currentSongIndex = (currentSongIndex + 1) % romanticSongs.length;
-            loadSongInfo();
-            bgMusic.play().catch(err => {
-                console.log('Audio autoplay blocked:', err);
-            });
         });
 
         function formatTime(seconds) {

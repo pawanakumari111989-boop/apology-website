@@ -138,18 +138,26 @@
             border-color: var(--primary);
         }
 
-        /* Music Floating Button - Improved */
-        .music-btn {
+        /* Music Player Container */
+        .music-player {
             position: fixed;
             bottom: 30px;
             right: 30px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        /* Music Floating Button - Improved */
+        .music-btn {
             background: linear-gradient(45deg, var(--primary), var(--secondary));
             color: white;
             border: none;
             padding: 15px;
             border-radius: 50%;
             cursor: pointer;
-            z-index: 100;
             box-shadow: 0 0 20px var(--primary);
             animation: pulse 2s infinite;
             font-size: 1.5rem;
@@ -173,6 +181,55 @@
         @keyframes pulse-play {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.15); }
+        }
+
+        /* Music Info Card */
+        .music-info {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 77, 109, 0.3);
+            border-radius: 15px;
+            padding: 15px 20px;
+            max-width: 250px;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.2);
+        }
+
+        .music-info.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .music-info h4 {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .music-info p {
+            color: #e0e0e0;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .music-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .music-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.1s linear;
         }
 
         /* Progress Bar */
@@ -481,6 +538,11 @@
                 padding: 6px 12px;
                 font-size: 0.8rem;
             }
+
+            .music-player {
+                bottom: 20px;
+                right: 20px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -542,9 +604,21 @@
     <!-- Canvas for Falling Effects -->
     <canvas id="effect-canvas"></canvas>
 
-    <!-- Music Button -->
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
-    <audio id="bg-music" loop preload="none">
+    <!-- Music Player -->
+    <div class="music-player">
+        <div class="music-info" id="musicInfo">
+            <h4 id="musicTitle">Now Playing ♪</h4>
+            <p id="musicArtist">Beautiful Romantic Song</p>
+            <div class="music-progress">
+                <div class="music-progress-bar" id="progressBar"></div>
+            </div>
+            <p id="musicTime" style="margin-top: 8px; font-size: 0.75rem; opacity: 0.7;">0:00 / 0:00</p>
+        </div>
+        <button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bg-music" loop preload="metadata">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
@@ -560,6 +634,7 @@
             <h1>Hey Isha... 🥺</h1>
             <p>I know you are super, super angry with me right now. Your anger is completely justified, but my heart couldn't handle the silence anymore.</p>
             <p>So, I built this entire luxury space just to say sorry to my queen. This page is made with all my love and apologies.</p>
+            <p>🎵 There's a romantic song playing in the background to set the mood...</p>
             <p>Please scroll down... let me try to fix us? ❤️</p>
             <button class="btn-next" onclick="scrollToPage(2)">Click here, please 🌹</button>
         </div>
@@ -584,7 +659,6 @@
             <div class="photo-grid" id="photoGrid">
                 <!-- Photos will be loaded here -->
             </div>
-            <p style="font-size: 0.9rem; margin-top: 20px; opacity: 0.7;">💡 Tip: Add your photos to the photos array in the script section</p>
             <button class="btn-next" onclick="scrollToPage(4)">Continue reading... ✨</button>
         </div>
     </section>
@@ -690,15 +764,83 @@
 
     <script>
         // ===== CONFIGURATION =====
-        // Add your photo URLs here (or use emoji placeholders)
-        const photoUrls = [
-            'https://via.placeholder.com/300?text=Memory+1+💕',
-            'https://via.placeholder.com/300?text=Memory+2+🌹',
-            'https://via.placeholder.com/300?text=Memory+3+✨',
-            'https://via.placeholder.com/300?text=Memory+4+💖'
+        // Beautiful romantic songs - multiple options for variety
+        const romanticSongs = [
+            {
+                title: "Romantic Melody",
+                artist: "Beautiful Background Music",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            },
+            {
+                title: "Love in the Air",
+                artist: "Soft Piano Music",
+                url: "https://assets.mixkit.co/active_storage/sfx/2744/2744-preview.mp3"
+            },
+            {
+                title: "Forever with You",
+                artist: "Romantic Strings",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            }
         ];
 
-        // ===== 1. GENERATE 1000 SORRIES =====
+        // Current song index
+        let currentSongIndex = 0;
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicInfo = document.getElementById('musicInfo');
+        const musicTitle = document.getElementById('musicTitle');
+        const musicArtist = document.getElementById('musicArtist');
+        const progressBar = document.getElementById('progressBar');
+        const musicTime = document.getElementById('musicTime');
+
+        let musicPlaying = false;
+
+        // ===== 1. LOAD SONG INFO =====
+        function loadSongInfo() {
+            const currentSong = romanticSongs[currentSongIndex];
+            musicTitle.textContent = currentSong.title + " ♪";
+            musicArtist.textContent = currentSong.artist;
+            bgMusic.src = currentSong.url;
+        }
+
+        // ===== 2. TOGGLE MUSIC =====
+        function toggleMusic() {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicPlaying = false;
+                musicBtn.classList.remove('playing');
+                musicInfo.classList.remove('show');
+            } else {
+                bgMusic.play().catch(err => {
+                    console.log('Audio autoplay blocked:', err);
+                });
+                musicPlaying = true;
+                musicBtn.classList.add('playing');
+                musicInfo.classList.add('show');
+            }
+        }
+
+        // ===== 3. UPDATE MUSIC PROGRESS =====
+        bgMusic.addEventListener('timeupdate', () => {
+            if (bgMusic.duration) {
+                const percent = (bgMusic.currentTime / bgMusic.duration) * 100;
+                progressBar.style.width = percent + '%';
+                
+                // Update time display
+                const current = formatTime(bgMusic.currentTime);
+                const duration = formatTime(bgMusic.duration);
+                musicTime.textContent = `${current} / ${duration}`;
+            }
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // ===== 4. GENERATE 1000 SORRIES =====
         function generateSorries() {
             const sorryBox = document.getElementById('sorry-container');
             let sorryText = "";
@@ -708,47 +850,29 @@
             sorryBox.innerHTML = sorryText;
         }
 
-        // ===== 2. LOAD PHOTO GRID =====
+        // ===== 5. LOAD PHOTO GRID =====
         function loadPhotos() {
             const photoGrid = document.getElementById('photoGrid');
-            photoUrls.forEach((url, index) => {
+            const photos = [
+                { emoji: '📸', label: 'Memory 1' },
+                { emoji: '💕', label: 'Memory 2' },
+                { emoji: '🌹', label: 'Memory 3' },
+                { emoji: '✨', label: 'Memory 4' }
+            ];
+            
+            photos.forEach((photo, index) => {
                 const photoItem = document.createElement('div');
                 photoItem.className = 'photo-item';
-                
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = `Memory ${index + 1}`;
-                img.onerror = function() {
-                    // Fallback to emoji if image fails to load
-                    this.parentElement.innerHTML = '<div class="photo-placeholder">📸</div>';
-                };
-                
-                photoItem.appendChild(img);
+                photoItem.innerHTML = `
+                    <div class="photo-placeholder" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; justify-content: center; align-items: center; font-size: 3rem;">
+                        ${photo.emoji}
+                    </div>
+                `;
                 photoGrid.appendChild(photoItem);
             });
         }
 
-        // ===== 3. BACKGROUND MUSIC CONTROLLER =====
-        let musicPlaying = false;
-        const musicBtn = document.getElementById('musicBtn');
-        const bgMusic = document.getElementById('bg-music');
-
-        function toggleMusic() {
-            if (musicPlaying) {
-                bgMusic.pause();
-                musicPlaying = false;
-                musicBtn.classList.remove('playing');
-            } else {
-                bgMusic.play().catch(err => {
-                    console.log('Audio autoplay blocked:', err);
-                    alert('Click anywhere on the page first, then try the music button!');
-                });
-                musicPlaying = true;
-                musicBtn.classList.add('playing');
-            }
-        }
-
-        // ===== 4. FALLING HEARTS AND STARS ANIMATION =====
+        // ===== 6. FALLING HEARTS AND STARS ANIMATION =====
         const canvas = document.getElementById('effect-canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -808,7 +932,7 @@
             canvas.height = window.innerHeight;
         });
 
-        // ===== 5. PAGE NAVIGATION AND PROGRESS TRACKING =====
+        // ===== 7. PAGE NAVIGATION AND PROGRESS TRACKING =====
         function scrollToPage(pageNum) {
             const page = document.getElementById(`page${pageNum}`);
             if (page) {
@@ -848,15 +972,23 @@
             document.getElementById('pageCounter').textContent = `Page ${currentPage}/10`;
         });
 
-        // ===== 6. INITIALIZATION =====
+        // ===== 8. INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', () => {
+            loadSongInfo();
             generateSorries();
             loadPhotos();
             
             // Enable music play on user interaction
             document.addEventListener('click', () => {
-                bgMusic.volume = 0.3; // Set volume to 30%
+                bgMusic.volume = 0.4; // Set volume to 40%
             }, { once: true });
+
+            // Auto-show music info after 2 seconds
+            setTimeout(() => {
+                if (!musicPlaying) {
+                    musicInfo.classList.add('show');
+                }
+            }, 2000);
         });
 
         // Smooth scroll behavior for all anchor links
